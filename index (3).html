@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinFlow - Personal Finance Management</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Toast Notifications Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="app-container">
+    <!-- Header (shown only when logged in) -->
+    <header id="appHeader" class="hidden">
+      <div class="logo">
+        <i class="fas fa-coins"></i>
+        <span>FinFlow</span>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="usernameDisplay">User</span>
+        <button class="btn btn-outline" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <!-- Home Page -->
+<!-- Replace the entire home section with this -->
+<div id="home" class="card">
+  <div class="hero-section">
+    <h1 class="hero-title">Take Control of Your Financial Future</h1>
+    <p class="hero-subtitle">FinFlow helps you track income, manage expenses, and achieve your financial goals with our simple, intuitive platform designed for everyday use.</p>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="toggleVisibility('signup')" style="background: white; color: var(--primary);">
+        <i class="fas fa-rocket"></i> Start Your Journey
+      </button>
+      <button class="btn btn-outline" onclick="toggleVisibility('login')" style="border-color: white; color: white;">
+        <i class="fas fa-sign-in-alt"></i> Returning User
+      </button>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fas fa-money-bill-wave"></i>
+      </div>
+      <h3 class="feature-title">Track Income</h3>
+      <p class="feature-description">Record all your income sources and see where your money comes from at a glance.</p>
+    </div>
+    
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fas fa-chart-pie"></i>
+      </div>
+      <h3 class="feature-title">Manage Expenses</h3>
+      <p class="feature-description">Categorize and track your spending to understand where your money goes each month.</p>
+    </div>
+    
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fas fa-bullseye"></i>
+      </div>
+      <h3 class="feature-title">Set Goals</h3>
+      <p class="feature-description">Create financial goals and track your progress towards achieving them.</p>
+    </div>
+    
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <h3 class="feature-title">View Insights</h3>
+      <p class="feature-description">Get clear insights into your financial health with comprehensive summaries.</p>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 40px;">
+    <h3 style="margin-bottom: 16px; color: var(--dark);">Ready to Transform Your Finances?</h3>
+    <p style="color: var(--gray); margin-bottom: 24px;">Join thousands of users who have taken control of their financial future with FinFlow.</p>
+    <button class="btn btn-primary" onclick="toggleVisibility('signup')">
+      <i class="fas fa-user-plus"></i> Create Free Account
+    </button>
+  </div>
+</div>
+
+    <!-- Sign Up Page -->
+    <div id="signup" class="auth-container card hidden">
+      <div class="auth-header">
+        <h2 class="auth-title">Create Account</h2>
+        <p class="auth-subtitle">Join thousands managing their finances better</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" class="form-control" placeholder="Enter your username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" class="form-control" placeholder="Create a strong password">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signupEmail">Email (optional)</label>
+        <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email">
+      </div>
+      <button class="btn btn-primary" onclick="signUp()" style="width: 100%; margin-bottom: 15px;">
+        <i class="fas fa-user-plus"></i> Create Account
+      </button>
+      <button class="btn btn-outline" onclick="toggleVisibility('home')" style="width: 100%;">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </button>
+      <div id="signupError" style="color: var(--danger); margin-top: 15px; text-align: center;"></div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login" class="auth-container card hidden">
+      <div class="auth-header">
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">Sign in to access your financial dashboard</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" class="form-control" placeholder="Enter your username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password">
+      </div>
+      <button class="btn btn-primary" onclick="logIn()" style="width: 100%; margin-bottom: 15px;">
+        <i class="fas fa-sign-in-alt"></i> Sign In
+      </button>
+      <button class="btn btn-outline" onclick="toggleVisibility('home')" style="width: 100%;">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </button>
+      <div id="loginError" style="color: var(--danger); margin-top: 15px; text-align: center;"></div>
+    </div>
+
+    <!-- Finance Dashboard -->
+    <div id="financeApp" class="hidden">
+      <!-- Balance Summary -->
+      <div class="balance-card">
+        <div class="balance-title">Current Balance</div>
+        <div class="balance-amount" id="currentBalance">0.00 birr</div>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon stat-income">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalIncome">0.00</h3>
+            <p>Total Income</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-expense">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalExpenses">0.00</h3>
+            <p>Total Expenses</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-balance">
+            <i class="fas fa-piggy-bank"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="savings">0.00</h3>
+            <p>Savings</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Quick Actions</h2>
+        </div>
+        <div class="actions-container">
+          <button class="action-btn" onclick="openModal('incomeModal')">
+            <i class="fas fa-plus-circle"></i>
+            <span>Add Income</span>
+          </button>
+          <button class="action-btn" onclick="openModal('mandatoryExpenseModal')">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Plan Expense</span>
+          </button>
+          <button class="action-btn" onclick="confirmMandatoryExpense()">
+            <i class="fas fa-check-circle"></i>
+            <span>Confirm Expense</span>
+          </button>
+          <button class="action-btn" onclick="openModal('otherExpenseModal')">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Add Expense</span>
+          </button>
+          <button class="action-btn" onclick="viewSummary()">
+            <i class="fas fa-chart-pie"></i>
+            <span>View Summary</span>
+          </button>
+          <button class="action-btn" onclick="openModal('historyModal')">
+            <i class="fas fa-history"></i>
+            <span>Transaction History</span>
+          </button>
+          <button class="action-btn" onclick="openModal('exportModal')">
+            <i class="fas fa-download"></i>
+            <span>Export Data</span>
+          </button>
+          <button class="action-btn" onclick="showAbout()">
+            <i class="fas fa-info-circle"></i>
+            <span>About FinFlow</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Recent Transactions</h2>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div class="search-container" style="width: 200px;">
+              <input type="text" id="transactionSearch" class="search-input" placeholder="Search transactions..." onkeyup="filterTransactions()">
+              <i class="fas fa-search search-icon"></i>
+            </div>
+            <button class="btn btn-outline" onclick="openModal('historyModal')">
+              <i class="fas fa-eye"></i> View All
+            </button>
+          </div>
+        </div>
+        <ul class="transaction-list" id="recentTransactions">
+          <!-- Transactions will be populated here -->
+        </ul>
+      </div>
+
+      <!-- Simple Financial Goals Section -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Financial Goals</h2>
+          <button class="btn btn-outline btn-sm" onclick="openModal('goalsModal')">
+            <i class="fas fa-plus"></i> Add Goal
+          </button>
+        </div>
+        <div id="goalsContainer">
+          <!-- Goals will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <!-- Add Income Modal -->
+  <div id="incomeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Income</h3>
+        <button class="modal-close" onclick="closeModal('incomeModal')">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="incomeSource">Income Source</label>
+        <input type="text" id="incomeSource" class="form-control" placeholder="Salary, Freelance, etc.">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="incomeAmount">Amount (birr)</label>
+        <input type="number" id="incomeAmount" class="form-control" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="incomeDate">Date</label>
+        <input type="date" id="incomeDate" class="form-control">
+      </div>
+      <button class="btn btn-primary" onclick="addIncome()" style="width: 100%;">
+        <i class="fas fa-plus-circle"></i> Add Income
+      </button>
+    </div>
+  </div>
+
+  <!-- Plan Mandatory Expense Modal -->
+  <div id="mandatoryExpenseModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Plan Mandatory Expense</h3>
+        <button class="modal-close" onclick="closeModal('mandatoryExpenseModal')">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="mandatoryCategory">Expense Category</label>
+        <input type="text" id="mandatoryCategory" class="form-control" placeholder="Rent, Utilities, etc.">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="mandatoryAmount">Planned Amount (birr)</label>
+        <input type="number" id="mandatoryAmount" class="form-control" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="mandatoryDueDate">Due Date</label>
+        <input type="date" id="mandatoryDueDate" class="form-control">
+      </div>
+      <button class="btn btn-primary" onclick="planMandatoryExpense()" style="width: 100%;">
+        <i class="fas fa-clipboard-list"></i> Plan Expense
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Other Expense Modal -->
+  <div id="otherExpenseModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Expense</h3>
+        <button class="modal-close" onclick="closeModal('otherExpenseModal')">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="otherCategory">Expense Category</label>
+        <input type="text" id="otherCategory" class="form-control" placeholder="Food, Entertainment, etc.">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="otherAmount">Amount (birr)</label>
+        <input type="number" id="otherAmount" class="form-control" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="otherDate">Date</label>
+        <input type="date" id="otherDate" class="form-control">
+      </div>
+      <button class="btn btn-primary" onclick="addOtherExpense()" style="width: 100%;">
+        <i class="fas fa-shopping-cart"></i> Add Expense
+      </button>
+    </div>
+  </div>
+
+  <!-- Transaction History Modal -->
+  <div id="historyModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Transaction History</h3>
+        <button class="modal-close" onclick="closeModal('historyModal')">&times;</button>
+      </div>
+      <div id="historyContent">
+        <!-- History content will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Modal -->
+  <div id="summaryModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Financial Summary</h3>
+        <button class="modal-close" onclick="closeModal('summaryModal')">&times;</button>
+      </div>
+      <div id="summaryContent">
+        <!-- Summary content will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div id="aboutModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">About FinFlow</h3>
+        <button class="modal-close" onclick="closeModal('aboutModal')">&times;</button>
+      </div>
+      <div id="aboutContent">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <i class="fas fa-coins" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+          <h2 style="color: var(--primary); margin-bottom: 10px;">FinFlow Personal Finance Manager</h2>
+        </div>
+        
+        <div style="line-height: 1.6; margin-bottom: 20px;">
+          <p>FinFlow is your personal financial companion designed to help you take control of your money with ease and confidence.</p>
+          
+          <h4 style="color: var(--primary); margin: 15px 0 10px;">What FinFlow Offers:</h4>
+          <ul style="padding-left: 20px; margin-bottom: 15px;">
+            <li><strong>Income Tracking:</strong> Record all your income sources in one place</li>
+            <li><strong>Expense Management:</strong> Track planned and actual expenses</li>
+            <li><strong>Financial Overview:</strong> Get a clear picture of your financial health</li>
+            <li><strong>Goal Setting:</strong> Set and track simple financial goals</li>
+            <li><strong>Data Export:</strong> Download your financial data for analysis</li>
+          </ul>
+
+          <h4 style="color: var(--primary); margin: 15px 0 10px;">How to Use:</h4>
+          <ol style="padding-left: 20px; margin-bottom: 15px;">
+            <li>Add your income sources as you receive money</li>
+            <li>Plan your mandatory expenses (rent, bills, etc.)</li>
+            <li>Track your daily spending in other expenses</li>
+            <li>Confirm planned expenses when you pay them</li>
+            <li>Use the summary to see your financial progress</li>
+          </ol>
+
+          <p><strong>Remember:</strong> FinFlow stores all your data locally in your browser for privacy and security. Your financial information never leaves your device.</p>
+        </div>
+
+        <div style="background: var(--primary-light); padding: 15px; border-radius: 8px; text-align: center;">
+          <p style="margin: 0; color: var(--primary-dark); font-weight: 500;">
+            <i class="fas fa-lightbulb" style="margin-right: 5px;"></i>
+            Start tracking today and build better financial habits!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simple Goals Modal -->
+<!-- Replace the goals modal with this -->
+<div id="goalsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Manage Financial Goals</h3>
+      <button class="modal-close" onclick="closeModal('goalsModal')">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label" for="goalTitle">Goal Name</label>
+      <input type="text" id="goalTitle" class="form-control" placeholder="e.g., Save for vacation, New laptop">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="goalTarget">Target Amount (birr)</label>
+      <input type="number" id="goalTarget" class="form-control" placeholder="0.00">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="goalDeadline">Target Date (Optional)</label>
+      <input type="date" id="goalDeadline" class="form-control">
+    </div>
+    
+    <button class="btn btn-primary" onclick="addGoal()" style="width: 100%;">
+      <i class="fas fa-bullseye"></i> Create Goal
+    </button>
+
+    <!-- Add to existing goal section -->
+    <div class="add-to-goal-section" id="addToGoalSection" style="display: none;">
+      <h4>Add to Goal</h4>
+      <div class="form-group">
+        <label class="form-label">Select Goal</label>
+        <select id="selectedGoal" class="form-control">
+          <!-- Goals will be populated here -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amount to Add (birr)</label>
+        <input type="number" id="goalContribution" class="form-control" placeholder="0.00">
+      </div>
+      <button class="btn btn-success" onclick="addToGoal()" style="width: 100%;">
+        <i class="fas fa-plus"></i> Add to Goal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add this modal for adding to goals -->
+<div id="addToGoalModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Add to Goal</h3>
+      <button class="modal-close" onclick="closeModal('addToGoalModal')">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Select Goal</label>
+      <select id="addToGoalSelect" class="form-control">
+        <!-- Goals will be populated here -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount to Add (birr)</label>
+      <input type="number" id="addToGoalAmount" class="form-control" placeholder="0.00">
+    </div>
+    <button class="btn btn-success" onclick="contributeToGoal()" style="width: 100%;">
+      <i class="fas fa-plus"></i> Add to Goal
+    </button>
+  </div>
+</div>
+
+  <!-- Export Modal -->
+  <div id="exportModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Export Data</h3>
+        <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Export Format</label>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-outline" onclick="exportData('csv')" style="flex: 1;">
+            <i class="fas fa-file-csv"></i> CSV
+          </button>
+          <button class="btn btn-outline" onclick="exportData('json')" style="flex: 1;">
+            <i class="fas fa-file-code"></i> JSON
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="generateExport()" style="width: 100%; margin-top: 10px;">
+        <i class="fas fa-download"></i> Export Data
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
